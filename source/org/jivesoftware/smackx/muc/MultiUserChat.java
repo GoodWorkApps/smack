@@ -87,7 +87,7 @@ public class MultiUserChat {
     private static Map<Connection, List<String>> joinedRooms =
             new WeakHashMap<Connection, List<String>>();
 
-    private Connection connection;
+    private WeakReference<Connection> weakRefConnection;
     private String room;
     private String subject;
     private String nickname = null;
@@ -168,9 +168,9 @@ public class MultiUserChat {
      *      service is running. Make sure to provide a valid JID.
      */
     public MultiUserChat(Connection connection, String room) {
-        this.connection = connection;
+        this.weakRefConnection = new WeakReference<Connection>(connection);
         this.room = room.toLowerCase();
-        init();
+        init(connection);
     }
 
     /**
@@ -330,6 +330,9 @@ public class MultiUserChat {
      *          405 error if the user is not allowed to create the room)
      */
     public synchronized void create(String nickname) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null)
+            return;
         if (nickname == null || nickname.equals("")) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
@@ -460,6 +463,9 @@ public class MultiUserChat {
         DiscussionHistory history,
         long timeout)
         throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null)
+            return;
         if (nickname == null || nickname.equals("")) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
@@ -533,6 +539,8 @@ public class MultiUserChat {
      * Leave the chat room.
      */
     public synchronized void leave() {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         // If not joined already, do nothing.
         if (!joined) {
             return;
@@ -563,6 +571,8 @@ public class MultiUserChat {
      * @throws XMPPException if an error occurs asking the configuration form for the room.
      */
     public Form getConfigurationForm() throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return null;
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.GET);
@@ -595,6 +605,8 @@ public class MultiUserChat {
      * @throws XMPPException if an error occurs setting the new rooms' configuration.
      */
     public void sendConfigurationForm(Form form) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -633,6 +645,8 @@ public class MultiUserChat {
      * 405 error if the user is not allowed to register with the room.
      */
     public Form getRegistrationForm() throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return null;
         Registration reg = new Registration();
         reg.setType(IQ.Type.GET);
         reg.setTo(room);
@@ -667,6 +681,8 @@ public class MultiUserChat {
      *      or a 503 error can occur if the room does not support registration.
      */
     public void sendRegistrationForm(Form form) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         Registration reg = new Registration();
         reg.setType(IQ.Type.SET);
         reg.setTo(room);
@@ -699,6 +715,8 @@ public class MultiUserChat {
      *      appropiate error messages to end-users.
      */
     public void destroy(String reason, String alternateJID) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -758,6 +776,8 @@ public class MultiUserChat {
      * @param reason the reason why the user is being invited.
      */
     public void invite(Message message, String user, String reason) {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         // TODO listen for 404 error code when inviter supplies a non-existent JID
         message.setTo(room);
 
@@ -950,6 +970,8 @@ public class MultiUserChat {
      * @return the reserved room nickname or <tt>null</tt> if none.
      */
     public String getReservedNickname() {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return null;
         try {
             DiscoverInfo result =
                 ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(
@@ -990,6 +1012,8 @@ public class MultiUserChat {
      * @throws XMPPException if the new nickname is already in use by another occupant.
      */
     public void changeNickname(String nickname) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         if (nickname == null || nickname.equals("")) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
@@ -1040,6 +1064,8 @@ public class MultiUserChat {
      * @param mode the mode type for the presence update.
      */
     public void changeAvailabilityStatus(String status, Presence.Mode mode) {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         if (nickname == null || nickname.equals("")) {
             throw new IllegalArgumentException("Nickname must not be null or blank.");
         }
@@ -1380,6 +1406,8 @@ public class MultiUserChat {
     }
 
     private void changeAffiliationByOwner(String jid, String affiliation) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -1408,6 +1436,8 @@ public class MultiUserChat {
 
     private void changeAffiliationByOwner(Collection<String> jids, String affiliation)
             throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -1446,6 +1476,8 @@ public class MultiUserChat {
      */
     private void changeAffiliationByAdmin(String jid, String affiliation, String reason)
             throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -1475,6 +1507,8 @@ public class MultiUserChat {
 
     private void changeAffiliationByAdmin(Collection<String> jids, String affiliation)
             throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -1504,6 +1538,8 @@ public class MultiUserChat {
     }
 
     private void changeRole(String nickname, String role, String reason) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -1532,6 +1568,8 @@ public class MultiUserChat {
     }
 
     private void changeRole(Collection<String> nicknames, String role) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.SET);
@@ -1629,6 +1667,8 @@ public class MultiUserChat {
      *      sent to the group chat.
      */
     public void addParticipantListener(PacketListener listener) {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         connection.addPacketListener(listener, presenceFilter);
         connectionListeners.add(listener);
     }
@@ -1641,6 +1681,8 @@ public class MultiUserChat {
      *      sent to the group chat.
      */
     public void removeParticipantListener(PacketListener listener) {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         connection.removePacketListener(listener);
         connectionListeners.remove(listener);
     }
@@ -1699,6 +1741,8 @@ public class MultiUserChat {
      *         don't have enough privileges to get this information.
      */
     private Collection<Affiliate> getAffiliatesByOwner(String affiliation) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return null;
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.GET);
@@ -1740,6 +1784,8 @@ public class MultiUserChat {
      *         don't have enough privileges to get this information.
      */
     private Collection<Affiliate> getAffiliatesByAdmin(String affiliation) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return null;
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.GET);
@@ -1802,6 +1848,8 @@ public class MultiUserChat {
      *         don't have enough privileges to get this information.
      */
     private Collection<Occupant> getOccupants(String role) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return null;
         MUCAdmin iq = new MUCAdmin();
         iq.setTo(room);
         iq.setType(IQ.Type.GET);
@@ -1840,6 +1888,8 @@ public class MultiUserChat {
      * @throws XMPPException if sending the message fails.
      */
     public void sendMessage(String text) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         Message message = new Message(room, Message.Type.groupchat);
         message.setBody(text);
         connection.sendPacket(message);
@@ -1857,6 +1907,8 @@ public class MultiUserChat {
      * @return new Chat for sending private messages to a given room occupant.
      */
     public Chat createPrivateChat(String occupant, MessageListener listener) {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return null;
         return connection.getChatManager().createChat(occupant, listener);
     }
 
@@ -1876,6 +1928,8 @@ public class MultiUserChat {
      * @throws XMPPException if sending the message fails.
      */
     public void sendMessage(Message message) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         connection.sendPacket(message);
     }
 
@@ -1928,6 +1982,8 @@ public class MultiUserChat {
      * @param listener a packet listener.
      */
     public void addMessageListener(PacketListener listener) {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         connection.addPacketListener(listener, messageFilter);
         connectionListeners.add(listener);
     }
@@ -1940,6 +1996,8 @@ public class MultiUserChat {
      * @param listener a packet listener.
      */
     public void removeMessageListener(PacketListener listener) {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         connection.removePacketListener(listener);
         connectionListeners.remove(listener);
     }
@@ -1954,6 +2012,8 @@ public class MultiUserChat {
      *          room subject will throw an error with code 403 (i.e. Forbidden)
      */
     public void changeSubject(final String subject) throws XMPPException {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         Message message = new Message(room, Message.Type.groupchat);
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
@@ -1988,6 +2048,8 @@ public class MultiUserChat {
      * Notification message that the user has joined the room.
      */
     private synchronized void userHasJoined() {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         // Update the list of joined rooms through this connection
         List<String> rooms = joinedRooms.get(connection);
         if (rooms == null) {
@@ -2001,6 +2063,8 @@ public class MultiUserChat {
      * Notification message that the user has left the room.
      */
     private synchronized void userHasLeft() {
+        Connection connection = weakRefConnection.get();
+        if (connection == null) return;
         // Update the list of joined rooms through this connection
         List<String> rooms = joinedRooms.get(connection);
         if (rooms == null) {
@@ -2127,7 +2191,7 @@ public class MultiUserChat {
         }
     }
 
-    private void init() {
+    private void init(Connection connection) {
         // Create filters
         messageFilter =
             new AndFilter(
@@ -2553,6 +2617,7 @@ public class MultiUserChat {
     }
 
     private void cleanup() {
+        Connection connection = weakRefConnection.get();
         try {
             if (connection != null) {
                 roomListenerMultiplexor.removeRoom(room);
