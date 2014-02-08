@@ -69,38 +69,38 @@ public class XMPPConnection extends Connection {
     /**
      * The socket which is used for this connection.
      */
-    Socket socket;
+    protected Socket socket;
 
-    String connectionID = null;
-    private String user = null;
-    private boolean connected = false;
+    protected String connectionID = null;
+    protected String user = null;
+    protected  boolean connected = false;
     // socketClosed is used concurrent
     // by XMPPConnection, PacketReader, PacketWriter
-    private volatile boolean socketClosed = false;
+    protected  volatile boolean socketClosed = false;
 
     /**
      * Flag that indicates if the user is currently authenticated with the server.
      */
-    private boolean authenticated = false;
+    protected boolean authenticated = false;
     /**
      * Flag that indicates if the user was authenticated with the server when the connection
      * to the server was closed (abruptly or not).
      */
-    private boolean wasAuthenticated = false;
-    private boolean anonymous = false;
-    private boolean usingTLS = false;
+    protected boolean wasAuthenticated = false;
+    protected boolean anonymous = false;
+    protected boolean usingTLS = false;
 
-    private ParsingExceptionCallback parsingExceptionCallback = SmackConfiguration.getDefaultParsingExceptionCallback();
+    protected  ParsingExceptionCallback parsingExceptionCallback = SmackConfiguration.getDefaultParsingExceptionCallback();
 
-    PacketWriter packetWriter;
-    PacketReader packetReader;
+    protected PacketWriter packetWriter;
+    protected PacketReader packetReader;
 
-    Roster roster = null;
+    protected Roster roster = null;
 
     /**
      * Collection of available stream compression methods offered by the server.
      */
-    private Collection<String> compressionMethods;
+    protected  Collection<String> compressionMethods;
 
     /**
      * Set to true by packet writer if the server acknowledged the compression

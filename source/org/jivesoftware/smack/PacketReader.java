@@ -236,6 +236,10 @@ class PacketReader {
                                     // Use the server name that the server says that it is.
                                     connection.config.setServiceName(parser.getAttributeValue(i));
                                 }
+                                // egv --- это для того, чтобы правильно обработать starttls в сервере
+                                else if (parser.getAttributeName(i).equals("starttls")) {
+                                    connection.startTLSReceived(true);
+                                }
                             }
                         }
                     }
