@@ -286,10 +286,10 @@ class PacketReader {
                         processPacket(new Success(parser.nextText()));
                         // We now need to bind a resource for the connection
                         // Open a new stream and wait for the response
-                        connection.packetWriter.openStream();
+//                        connection.packetWriter.openStream();
                         // Reset the state of the parser since a new stream element is going
                         // to be sent by the server
-                        resetParser();
+//                        resetParser();
                         // The SASL authentication with the server was successful. The next step
                         // will be to bind the resource
                         connection.getSASLAuthentication().authenticated();
