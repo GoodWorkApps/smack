@@ -66,24 +66,24 @@ public class SASLAuthentication implements UserAuthentication {
     private static Map<String, Class<? extends SASLMechanism>> implementedMechanisms = new HashMap<String, Class<? extends SASLMechanism>>();
     private static List<String> mechanismsPreferences = new ArrayList<String>();
 
-    private Connection connection;
+    protected Connection connection;
     private Collection<String> serverMechanisms = new ArrayList<String>();
     private SASLMechanism currentMechanism = null;
     /**
      * Boolean indicating if SASL negotiation has finished and was successful.
      */
-    private boolean saslNegotiated;
+    protected boolean saslNegotiated;
     /**
      * Boolean indication if SASL authentication has failed. When failed the server may end
      * the connection.
      */
-    private boolean saslFailed;
+    protected boolean saslFailed;
     private boolean resourceBinded;
     private boolean sessionSupported;
     /**
      * The SASL related error condition if there was one provided by the server.
      */
-    private String errorCondition;
+    protected String errorCondition;
 
     static {
 
@@ -175,7 +175,7 @@ public class SASLAuthentication implements UserAuthentication {
         return answer;
     }
 
-    SASLAuthentication(Connection connection) {
+    public SASLAuthentication(Connection connection) {
         super();
         this.connection = connection;
         this.init();
