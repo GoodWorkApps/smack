@@ -218,7 +218,7 @@ class PacketReader {
                     // the connectionID lock so that the packet reader startup can finish.
                     else if (parser.getName().equals("stream")) {
                         // Ensure the correct jabber:client namespace is being used.
-                        if ("jabber:client".equals(parser.getNamespace(null))) {
+                        if ("jabber:client:simplified".equals(parser.getNamespace(null))) {
                             // Get the connection id.
                             for (int i=0; i<parser.getAttributeCount(); i++) {
                                 if (parser.getAttributeName(i).equals("id")) {

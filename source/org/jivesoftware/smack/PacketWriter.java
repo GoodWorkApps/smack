@@ -223,7 +223,7 @@ class PacketWriter {
         StringBuilder stream = new StringBuilder();
         stream.append("<stream:stream");
         stream.append(" to=\"").append(connection.getServiceName()).append("\"");
-        stream.append(" xmlns=\"jabber:client\"");
+        stream.append(" xmlns=\"jabber:client:simplified\"");
         stream.append(" xmlns:stream=\"http://etherx.jabber.org/streams\"");
         stream.append(" version=\"1.0\">");
         writer.write(stream.toString());
