@@ -763,7 +763,7 @@ public abstract class Connection {
                 // Use try block since we may not have permission to get a system
                 // property (for example, when an applet).
                 try {
-                    className = System.getProperty("smack.debuggerClass");
+                    className = "org.jivesoftware.smack.debugger.ConsoleDebugger";//System.getProperty("smack.debuggerClass");
                 }
                 catch (Throwable t) {
                     // Ignore.
