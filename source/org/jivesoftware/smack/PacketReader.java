@@ -238,7 +238,7 @@ class PacketReader {
                                 }
                                 // egv --- это для того, чтобы правильно обработать starttls в сервере
                                 else if (parser.getAttributeName(i).equals("starttls")) {
-                                    connection.startTLSReceived(true);
+                                    connection.startTLSReceived(false);
                                 }
                             }
                         }
