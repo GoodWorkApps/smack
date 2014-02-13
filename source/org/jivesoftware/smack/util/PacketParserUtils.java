@@ -113,6 +113,12 @@ public class PacketParserUtils {
                         message.addSubject(xmlLang, subject);
                     }
                 }
+                else if (elementName.equals("delay")) {
+                    message.setStamp(parser.getAttributeValue("", "stamp"));
+                }
+                else if (elementName.equals("mime")) {
+                    message.setSrc(parser.getAttributeValue("", "src"));
+                }
                 else if (elementName.equals("body")) {
                     String xmlLang = getLanguageAttribute(parser);
                     if (xmlLang == null) {

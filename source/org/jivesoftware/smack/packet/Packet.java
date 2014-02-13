@@ -51,6 +51,25 @@ import org.jivesoftware.smack.util.StringUtils;
  */
 public abstract class Packet {
 
+    private String src;
+    private String stamp;
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
+
+    public void setStamp(String stamp) {
+        this.stamp = stamp;
+    }
+
+    public String getSrc() {
+        return src;
+    }
+
+    public String getStamp() {
+        return stamp;
+    }
+
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase();
 
