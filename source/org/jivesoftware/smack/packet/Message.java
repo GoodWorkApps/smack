@@ -653,6 +653,9 @@ public class Message extends Packet {
          * Text message to be displayed in scrolling marquee displays.
          */
         headline,
+        imState,
+        imSm,
+        imMMS,
 
         /**
          * indicates a messaging error.
@@ -661,6 +664,15 @@ public class Message extends Packet {
 
         public static Type fromString(String name) {
             try {
+                if (name.equals("im-sm")) {
+                    return imSm;
+                }
+                if (name.equals("im-mms")) {
+                    return imMMS;
+                }
+                if (name.equals("im-state")) {
+                    return imState;
+                }
                 return Type.valueOf(name);
             }
             catch (Exception e) {

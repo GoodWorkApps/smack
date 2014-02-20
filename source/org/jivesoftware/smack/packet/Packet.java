@@ -53,6 +53,15 @@ public abstract class Packet {
 
     private String src;
     private String stamp;
+    private boolean ack;
+
+    public boolean isAck() {
+        return ack;
+    }
+
+    public void setAck(boolean ack) {
+        this.ack = ack;
+    }
 
     public void setSrc(String src) {
         this.src = src;
