@@ -656,6 +656,7 @@ public class Message extends Packet {
         imState,
         imSm,
         imMMS,
+        imLocshare,
 
         /**
          * indicates a messaging error.
@@ -664,6 +665,9 @@ public class Message extends Packet {
 
         public static Type fromString(String name) {
             try {
+                if (name.equals("im-locshare")) {
+                    return imLocshare;
+                }
                 if (name.equals("im-sm")) {
                     return imSm;
                 }
